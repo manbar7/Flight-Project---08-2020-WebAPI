@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <a class="navbar-brand" href="#">Departures</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Landings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <title>Manber's Flight System - Departures</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+
+
+<script>
+    $(document).ready(function () {
+        $("#Get").click(function () {
+            $.getJSON('http://localhost:58064/api/anonymousfacade/getallflights', function (data) {
+                console.log(data);
+                var $flights_table = $("#flights")
+                
+
+
+                $.each(data, function (i, flight) {
+                    var d = flight.DEPARTURE_TIME;
+                    var pretty_date = prettyDate2(d);
+                    function prettyDate2(d) {
+                        var date = new Date(d);
+                        //var localeSpecificTime = date.toLocaleTimeString();
+                       // return localeSpecificTime.replace(/:\d+ /, ' ');
+                        
+                        datetext = date.getHours() + ":" + date.getMinutes()
+                        return datetext;
+                    }
+
+                    // clear all rows (except headers)
+                    $flights_table.empty();
+
+                    // if it cleas also the th then append the headers as well
+
+                    $flights_table.append("<tr>" +
+                        "<td>" + flight.FLIGHT_ID + "</td>" +
+                        "<td>" + flight.AIRLINECOMPANY_ID + "</td>" +
+                        "<td>" + flight.ORIGIN_COUNTRY_CODE + "</td>" +
+                        "<td>" + flight.DESTINATION_COUNTRY_CODE + "</td>" +
+                        "<td>" + pretty_date + "</td>" +
+                        "<td>" + flight.LANDING_TIME + "</td>" +
+                        "<td>" + flight.REMAINING_TICKETS + "</td>" + "</tr>")
+                })
+            });
+        });
+
+    });
+
+</script>
+
+
+
+<body>
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <h1>Departures</h1>
+        <p>Welcome to Manber's flight system!</p>
+    </div>
+
+    
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <input  class="btn btn-default" type="button" id="Get" value="Show Flights" />
+        </div>
+
+        <table id="flights" class="table table-dark" border="0" style="padding:5px" cellpadding="7">
+            <thead>
+                <tr>
+                    <th>Flight</th>
+                    <th>Airline Name</th>
+                    <th>Departing From</th>
+                    <th>To</th>
+                    <th>Est. Time</th>
+                    <th>T</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="data"></tbody>
+        </table>
+
+</body>
+</html>
